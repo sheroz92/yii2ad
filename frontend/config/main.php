@@ -12,9 +12,6 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
-        'request' => [
-            'csrfParam' => '_csrf-frontend',
-        ],
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
@@ -35,6 +32,18 @@ return [
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+        ],
+        'request' => [
+            'baseUrl' => '',
+            'csrfParam' => '_csrf-frontend',
+        ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' => [
+                '' => 'user/index',
+                '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
+            ],
         ],
         /*
         'urlManager' => [

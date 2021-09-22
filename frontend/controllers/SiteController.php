@@ -2,9 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\User;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
+use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -15,6 +17,8 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\web\ErrorAction;
+use yii\captcha\CaptchaAction;
 
 /**
  * Site controller
@@ -37,7 +41,7 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'profile'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -59,10 +63,10 @@ class SiteController extends Controller
     {
         return [
             'error' => [
-                'class' => 'yii\web\ErrorAction',
+                'class' => ErrorAction::class,
             ],
             'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
+                'class' => CaptchaAction::class,
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
@@ -137,6 +141,29 @@ class SiteController extends Controller
     }
 
     /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function actionProfile()
+    {
+        /** @var $model User*/
+        $model = Yii::$app->user->identity;
+        $model->scenario = 'profile';
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->password != ''){
+                $model->setPassword($model->password);
+            }
+            if ($model->save()){
+                Yii::$app->session->setFlash('success', 'Succesfuly save');
+                return $this->refresh();
+            }
+        }
+        return $this->render('profile', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
      * Displays about page.
      *
      * @return mixed
@@ -150,6 +177,7 @@ class SiteController extends Controller
      * Signs user up.
      *
      * @return mixed
+     * @throws Exception
      */
     public function actionSignup()
     {
@@ -217,8 +245,8 @@ class SiteController extends Controller
      * Verify email address
      *
      * @param string $token
-     * @throws BadRequestHttpException
      * @return yii\web\Response
+     * @throws BadRequestHttpException
      */
     public function actionVerifyEmail($token)
     {

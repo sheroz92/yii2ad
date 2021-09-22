@@ -3,22 +3,21 @@
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap4\ActiveForm */
 
-/* @var $model \frontend\models\SignupForm */
+/* @var $model ContactForm */
 
+use frontend\models\ContactForm;
 use yii\bootstrap4\Html;
 use yii\bootstrap4\ActiveForm;
 
-$this->title = 'Signup';
+$this->title = 'Profile';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-signup">
+<div class="site-contact">
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>Please fill out the following fields to signup:</p>
 
     <div class="row">
         <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
+            <?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
 
             <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
@@ -31,7 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'about')->textarea() ?>
 
             <?= $form->field($model, 'birthday') ?>
-
             <?= $form->field($model, 'email') ?>
 
             <?= $form->field($model, 'password')->passwordInput() ?>
@@ -39,10 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'password_repeat')->passwordInput() ?>
 
             <div class="form-group">
-                <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>
             </div>
 
             <?php ActiveForm::end(); ?>
         </div>
     </div>
+
 </div>
