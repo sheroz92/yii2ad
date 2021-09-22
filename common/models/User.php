@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -22,9 +23,17 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property string $name [varchar(255)]
+ * @property string $last_name [varchar(255)]
+ * @property string $middle_name [varchar(255)]
+ * @property string $about
+ * @property string $birthday [date]
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    public $password;
+    public $password_repeat;
+
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
@@ -54,8 +63,22 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
+            [['username', 'name', 'last_name', 'middle_name', 'about', 'birthday'], 'trim'],
+            [['birthday'], 'datetime', 'format' => 'php:Y-m-d', 'message' => 'Valid format 2000-01-20'],
+
+            [['username', 'name'], 'required'],
+            [['username', 'name', 'last_name', 'middle_name'], 'string', 'min' => 2, 'max' => 255],
+            ['about', 'string', 'min' => 2],
+
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+
+            [['password_repeat', 'password'], 'required', 'on' => 'create'],
+            ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
+            [
+                'password_repeat', 'compare', 'compareAttribute' => 'password',
+                'message' => "Passwords don't match", 'on' => ['profile', 'create', 'update']
+            ],
         ];
     }
 
@@ -110,7 +133,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token verify email token
      * @return static|null
      */
-    public static function findByVerificationToken($token) {
+    public static function findByVerificationToken($token)
+    {
         return static::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
@@ -129,7 +153,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -173,6 +197,7 @@ class User extends ActiveRecord implements IdentityInterface
      * Generates password hash from password and sets it to the model
      *
      * @param string $password
+     * @throws Exception
      */
     public function setPassword($password)
     {
