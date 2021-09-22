@@ -8,6 +8,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -81,6 +82,7 @@ class UserController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                $model->saveImage(UploadedFile::getInstance($model, 'image'));
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -104,6 +106,7 @@ class UserController extends Controller
         $model = $this->findModel($id);
         $model->scenario = 'update';
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            $model->saveImage(UploadedFile::getInstance($model, 'image'));
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

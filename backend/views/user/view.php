@@ -30,6 +30,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
+            [
+                'attribute' => 'id',
+                'label' => 'Image',
+                'value' => function ($model) {
+                    $path = Yii::getAlias('@frontend/web');
+                    $file = '/images/' . $model->id . '.jpg';
+                    if (is_file($path . $file)) {
+                        return $file;
+                    }
+                    return '';
+                },
+                'format' => ['image', ['width' => '100']],
+            ],
             'username',
             'name',
             'last_name',

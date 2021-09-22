@@ -19,6 +19,7 @@ use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use yii\web\ErrorAction;
 use yii\captcha\CaptchaAction;
+use yii\web\UploadedFile;
 
 /**
  * Site controller
@@ -154,6 +155,7 @@ class SiteController extends Controller
                 $model->setPassword($model->password);
             }
             if ($model->save()){
+                $model->saveImage(UploadedFile::getInstance($model, 'image'));
                 Yii::$app->session->setFlash('success', 'Succesfuly save');
                 return $this->refresh();
             }

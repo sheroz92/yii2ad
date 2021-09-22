@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Exception;
 use yii\base\Model;
 use common\models\User;
+use yii\web\UploadedFile;
 
 /**
  * Signup form
@@ -21,6 +22,7 @@ class SignupForm extends Model
     public $email;
     public $password;
     public $password_repeat;
+    public $image;
 
     /**
      * {@inheritdoc}
@@ -28,6 +30,8 @@ class SignupForm extends Model
     public function rules()
     {
         return [
+            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
+
             [['username', 'name', 'last_name', 'middle_name', 'about', 'birthday'], 'trim'],
             [['birthday'], 'datetime', 'format' => 'php:Y-m-d', 'message' => 'Valid format 2000-01-20'],
 
@@ -77,8 +81,11 @@ class SignupForm extends Model
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
-
-        return $user->save() && $this->sendEmail($user);
+        $save = $user->save() && $this->sendEmail($user);
+        if($save){
+            $user->saveImage(UploadedFile::getInstance($user, 'image'));
+        }
+        return $save;
     }
 
     /**

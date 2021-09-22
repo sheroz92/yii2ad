@@ -29,7 +29,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($model, 'about')->textarea() ?>
 
-            <?= $form->field($model, 'birthday') ?>
+            <?= $form->field($model, 'birthday')->widget(\yii\jui\DatePicker::class, [
+                'language' => 'en',
+                'dateFormat' => 'yyyy-MM-dd',
+                'options' => [
+                    'class'=>'form-control'
+                ]
+            ]) ?>
+
+            <?= $form->field($model, 'image')->fileInput() ?>
+
             <?= $form->field($model, 'email') ?>
 
             <?= $form->field($model, 'password')->passwordInput() ?>

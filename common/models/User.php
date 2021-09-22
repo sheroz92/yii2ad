@@ -8,6 +8,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\web\UploadedFile;
 
 /**
  * User model
@@ -33,6 +34,7 @@ class User extends ActiveRecord implements IdentityInterface
 {
     public $password;
     public $password_repeat;
+    public $image;
 
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
@@ -58,11 +60,23 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @param $image UploadedFile
+     */
+    public function saveImage($image)
+    {
+        if ($image) {
+            $path = Yii::getAlias('@frontend/web/images');
+            $image->saveAs($path . '/' . $this->id . '.jpg');
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
+            [['image'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             [['username', 'name', 'last_name', 'middle_name', 'about', 'birthday'], 'trim'],
             [['birthday'], 'datetime', 'format' => 'php:Y-m-d', 'message' => 'Valid format 2000-01-20'],
 
