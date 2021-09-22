@@ -1,60 +1,63 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
-    </a>
-    <h1 align="center">Yii 2 Advanced Project Template</h1>
-    <br>
-</p>
+**Инструкция запуска**
+----
 
-Yii 2 Advanced Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
-developing complex Web applications with multiple tiers.
+**Тестовое задание для разработчика**
+----
+Создать приложение на Yii2, реализующее функции личного кабинета.
 
-The template includes three tiers: front end, back end, and console, each of which
-is a separate Yii application.
+Проект базировать на шаблоне advanced. Можно использовать только функционал, предоставленный фреймворком, и расширения. Нельзя использовать сторонние готовые модули, реализующие полностью либо частично функционал, описанный в данном тестовом задании, в части бизнес-логики.
+Все необходимые зависимости подключать с помощью Composer.
+Разработку проекта вести в GIT. В первом коммите разместить только каркас приложения (развёрнутый шаблон advanced), последующие - по усмотрению разработчика.
+В ходе работы над заданием следовать стандартам кодирования PSR, а также основным принципам разработки.
+Схему базы данных создавать через миграции с использованием ORM.
+Дизайн и расположение элементов интерфейса на сайте свободное, на своё усмотрение. Рекомендуется использовать Bootstrap.
 
-The template is designed to work in a team development environment. It supports
-deploying the application in different environments.
+Приложение разделить на две части: Frontend (общедоступная часть) и Backend (административная панель).
 
-Documentation is at [docs/guide/README.md](docs/guide/README.md).
+1. Frontend-часть приложения.
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![build](https://github.com/yiisoft/yii2-app-advanced/workflows/build/badge.svg)](https://github.com/yiisoft/yii2-app-advanced/actions?query=workflow%3Abuild)
+Frontend должен содержать следующие разделы:
+•	главная страница (содержит список пользователей с постраничной навигацией)
+•	страница регистрации (форма: логин, пароль, подтверждение пароля)
+•	страница авторизации (форма: логин+пароль, “запомнить меня”)
+•	страница редактирования своего профиля
+•	страница просмотра профиля
 
-DIRECTORY STRUCTURE
--------------------
+Все разделы Frontend должны иметь pretty-url, маршруты именовать на усмотрение разработчика.
 
-```
-common
-    config/              contains shared configurations
-    mail/                contains view files for e-mails
-    models/              contains model classes used in both backend and frontend
-    tests/               contains tests for common classes    
-console
-    config/              contains console configurations
-    controllers/         contains console controllers (commands)
-    migrations/          contains database migrations
-    models/              contains console-specific model classes
-    runtime/             contains files generated during runtime
-backend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains backend configurations
-    controllers/         contains Web controller classes
-    models/              contains backend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for backend application    
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-frontend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains frontend configurations
-    controllers/         contains Web controller classes
-    models/              contains frontend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for frontend application
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-    widgets/             contains frontend widgets
-vendor/                  contains dependent 3rd-party packages
-environments/            contains environment-based overrides
-```
+Неавторизованному пользователю доступны действия: регистрация, авторизация.
+Авторизованному пользователю доступны действия: заполнение своего профиля, выход из системы.
+Всем доступны действия: просмотр списка пользователей, просмотр профиля.
+
+Профиль пользователя должен содержать информацию: фамилия, имя отчество, дата рождения, поле “о себе”, фотография пользователя.
+
+2. Backend-часть приложения.
+
+Backend должен быть доступен по URL “/admin”.
+
+Вход в Backend (админ-панель) должен быть доступен только по следующим реквизитам доступа:
+Логин: admin
+Пароль: admin
+
+Backend должен содержать раздел работы с пользователями, реализующий CRUD:
+•	список пользователей
+•	редактирование пользователя
+•	создание нового пользователя
+•	просмотр данных пользователя
+•	удаление пользователя
+
+
+
+Финальный код приложения расположить в общедоступном репозитории. Рабочую развёрнутую версию (можно с тестовыми данными, без очистки базы) разместить на любой площадке, где можно проверить работоспособность.
+
+Сообщить также количество времени, потраченное на выполнение тестового задания.
+
+
+Опционально (будет плюсом, но можно не делать)
+
+Настроить автоматический CI/CD для приложения с использованием инструментов, предоставленных репозиторием (Gitlab, Bitbucket и пр.).
+Необходимо сделать два варианта деплоя из двух веток.
+1. Деплой кода в ветке “development” должен инициализировать окружение разработки.
+2. Деплой кода в ветке “production” должен инициализировать боевое окружение.
+Оба варианта должны обновлять на сервере, куда происходит деплой, код приложения из соответствующей ветки, инициализировать окружение, устанавливать и обновлять зависимости composer, выполнять миграции, чистить кэш, а также выполнять иные процессы, необходимые для работы приложения.
+
