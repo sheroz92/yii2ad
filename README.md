@@ -1,5 +1,15 @@
 **Инструкция запуска**
 ----
+1. запустить composer install
+2. запустить init.bat или init
+3. в файл common/config/main-local.php внести актуальные конфигурации базы данных и пожеланию smtp mailer
+4. запустить yii migrate
+5. в настройки achape воздать вертуальный хост или же запустить в реальный хост
+
+    `<VirtualHost *:80>
+        DocumentRoot "path\localhost\yii2ad"
+        ServerName yii2ad.loc
+    </VirtualHost>`
 
 **Тестовое задание для разработчика**
 ----
